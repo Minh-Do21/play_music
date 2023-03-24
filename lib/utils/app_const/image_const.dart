@@ -1,7 +1,7 @@
 enum IMAGE_CONST {
   logo,
-  image_edit_video,
-  image_tape_disc,
+  playing,
+  stop_play,
 }
 
 // ignore: camel_case_extensions
@@ -10,10 +10,10 @@ extension IMAGE_CONST_VALUE on IMAGE_CONST {
     switch (this) {
       case IMAGE_CONST.logo:
         return 'assets/images/logo_app.png';
-      case IMAGE_CONST.image_edit_video:
-        return 'assets/images/image_edit_video.png';
-      case IMAGE_CONST.image_tape_disc:
-        return 'assets/images/image_tape_disc.png';
+      case IMAGE_CONST.playing:
+        return 'assets/images/playing.gif';
+      case IMAGE_CONST.stop_play:
+        return 'assets/images/stop_play.png';
       default:
         return '';
     }

@@ -1,22 +1,37 @@
 part of 'dashboard_bloc.dart';
 
 class DashboardState extends Equatable {
-  final int index;
+  final bool isPlaying;
+  final FormzSubmissionStatus statusGetlist;
+  final List<AudioSource> listMusic;
+  final bool isAnimationText;
 
   const DashboardState({
-    required this.index,
+    required this.isPlaying,
+    required this.listMusic,
+    required this.statusGetlist,
+    required this.isAnimationText,
   });
 
   DashboardState copyWith({
-    final int? index,
+    final bool? isPlaying,
+    List<AudioSource>? listMusic,
+    FormzSubmissionStatus? statusGetlist,
+    bool? isAnimationText,
   }) {
     return DashboardState(
-      index: index ?? this.index,
+      isPlaying: isPlaying ?? this.isPlaying,
+      listMusic: listMusic ?? this.listMusic,
+      statusGetlist: statusGetlist ?? this.statusGetlist,
+      isAnimationText: isAnimationText ?? this.isAnimationText,
     );
   }
 
   @override
   List<Object> get props => [
-    index,
+    isPlaying,
+    listMusic,
+    statusGetlist,
+    isAnimationText,
   ];
 }

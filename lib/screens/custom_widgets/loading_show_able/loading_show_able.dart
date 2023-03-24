@@ -1,5 +1,7 @@
 import 'package:bot_toast/bot_toast.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../../../common/size_config.dart';
 import '../../../utils/barrel_utils.dart';
 
 class LoadingShowAble {
@@ -22,8 +24,9 @@ class LoadingShowAble {
         animationReverseDuration: const Duration(milliseconds: 200),
         align: Alignment.center,
         toastBuilder: (cancelFunc) {
-          return const CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(COLOR_CONST.tropaz),
+          return CupertinoActivityIndicator(
+            color: COLOR_CONST.white,
+            radius: getProportionateScreenWidth(17),
           );
         },
       );

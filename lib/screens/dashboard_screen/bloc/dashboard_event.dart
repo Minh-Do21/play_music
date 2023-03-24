@@ -2,10 +2,18 @@ part of 'dashboard_bloc.dart';
 
 abstract class DashboardEvent {}
 
-class ChangeScreenEvent extends DashboardEvent{
-  final int index;
+class GetListMusicEvent extends DashboardEvent{
+  GetListMusicEvent();
+}
 
-  ChangeScreenEvent({
-    required this.index
+class ChangeStatusAudiEvent extends DashboardEvent{
+  final bool isPlaying;
+
+  ChangeStatusAudiEvent({
+    required this.isPlaying
   });
+}
+
+class ChangeAnimationTextEvent extends DashboardEvent{
+  ChangeAnimationTextEvent();
 }

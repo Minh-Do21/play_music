@@ -17,9 +17,9 @@ class ErrorFromServer implements Exception {
     try {
       final jsonParser = JSON(json);
       return ErrorFromServer(
-        status: jsonParser['status'].booleanValue,
-        errorCode: jsonParser['error_code'].stringValue,
-        message: jsonParser['message'].stringValue,
+        status: false,
+        errorCode: jsonParser['err'].stringValue,
+        message: jsonParser['msg'].stringValue,
       );
     } catch (e) {
       return ErrorFromServer.unknownError(customMessage: e.toString());

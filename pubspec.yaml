@@ -1,4 +1,4 @@
-name: base_project
+name: play_music
 description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
@@ -30,7 +30,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
 
@@ -45,6 +44,7 @@ dependencies:
   dio: 4.0.0
   formz: 0.5.0
   g_json: 4.1.0
+  dio_cookie_manager: 2.0.0
 
   # UI
   shimmer: 2.0.0
@@ -68,6 +68,14 @@ dependencies:
   dio_http_cache: 0.3.0
   intl: 0.18.0
   focus_detector: 2.0.1
+  google_fonts: 2.3.1
+  sliding_up_panel: 2.0.0
+  palette_generator: 0.3.3+2
+
+  #Audio
+  just_audio: 0.9.31
+  just_audio_background: 0.0.1-beta.9
+  audio_service: 0.18.9
 
 dev_dependencies:
   flutter_test:

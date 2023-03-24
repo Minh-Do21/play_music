@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:play_music/screens/search_song_screen/search_song_screen.dart';
 import 'barrel_screens.dart';
 import 'dashboard_screen/dashboard_screen.dart';
 
@@ -9,6 +10,7 @@ class AppRouter {
   static const String VIDEO_PLAY_SCREEN = 'video_play_screen';
   static const String QR_CODE_SCREEN = 'qr_code_screen';
   static const String SCAN_QR_CODE_SCREEN = 'scan_qr_code_screen';
+  static const String SEARCH_SONG_SCREEN = 'search_song_screen';
 
   //Check First Screen Open
   static Future<Widget> initialFirstScreen() async {
@@ -32,8 +34,8 @@ class AppRouter {
     switch (settings.name) {
       case DASHBOARD_SCREEN:
         return MaterialPageRoute(builder: (_) => const DashboardScreen());
-      // case LOGIN_SCREEN:
-      //   return MaterialPageRoute(builder: (_) => LoginScreen());
+      case SEARCH_SONG_SCREEN:
+        return MaterialPageRoute(builder: (_) => SearchSongScreen());
       // case BROWSER_SCREEN:
       //   return MaterialPageRoute(
       //       builder: (_) =>

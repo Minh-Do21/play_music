@@ -34,6 +34,7 @@ class DioProvider {
 class HttpLogInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+    options.headers["Cookie"] = AppConfig.instance.Cookie;
     log('REQUEST: ${options.uri}\n'
         'data=${options.data}\n'
         'method=${options.method}\n'
@@ -49,6 +50,9 @@ class HttpLogInterceptor extends Interceptor {
       options.headers.putIfAbsent('X-RapidAPI-Key', () => XRapidAPIKey);
       options.headers.putIfAbsent('X-RapidAPI-Host', () => XRapidAPIHost);
     }
+
+    
+
     return super.onRequest(options, handler);
   }
 

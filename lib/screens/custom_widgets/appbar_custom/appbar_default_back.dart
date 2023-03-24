@@ -9,7 +9,7 @@ class AppBarDefaultBack extends StatelessWidget implements PreferredSizeWidget {
   final List<Widget>? actions;
   final Widget? iconBack;
   final bool? isCallBack;
-  final VoidCallback? callback;
+  final Function()? callback;
   final Color? backgroundColor;
   final TextStyle? titleStyle;
 
@@ -43,8 +43,8 @@ class AppBarDefaultBack extends StatelessWidget implements PreferredSizeWidget {
           ICON_CONST.ic_back.path,
           color: COLOR_CONST.black,
         ),
-        onPressed: () {
-            Navigator.of(context).pop();         
+        onPressed: callback ?? () {
+            Navigator.of(context).pop();  
         },
       ) : Container(),
       actions: actions,

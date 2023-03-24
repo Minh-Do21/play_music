@@ -1,24 +1,15 @@
 enum HTTPRequestMethods { get, post, put, patch, delete }
 
 enum ApiURL {
-  getVideoTrend,
-  getCommentsOfVideo,
-  getUserInfo,
-  getVideoUserPost,
+  searchSong,
 }
 
 // Handle this case.
 extension ApiURLState on ApiURL {
   String get path {
     switch (this) {
-      case ApiURL.getVideoTrend:
-        return 'feed/list';
-      case ApiURL.getCommentsOfVideo:
-        return 'comment/list';
-      case ApiURL.getUserInfo:
-        return 'user/info';
-      case ApiURL.getVideoUserPost:
-        return 'user/posts';
+      case ApiURL.searchSong:
+        return 'api/v2/search/multi';
       default:
         return 'undefine';
     }
@@ -26,10 +17,7 @@ extension ApiURLState on ApiURL {
 
   HTTPRequestMethods? get methods {
     switch (this) {
-      case ApiURL.getVideoTrend:
-      case ApiURL.getCommentsOfVideo:
-      case ApiURL.getUserInfo:
-      case ApiURL.getVideoUserPost:
+      case ApiURL.searchSong:
         return HTTPRequestMethods.get;
 
       //- API Using Post Method

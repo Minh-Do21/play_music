@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../common/size_config.dart';
 import 'barrel_const.dart';
 
@@ -13,8 +14,7 @@ class FONT_CONST {
     double? height,
     TextDecoration? textDecoration,
   }) {
-    return TextStyle(
-      // fontFamily: 'Nunito',
+    return GoogleFonts.inter( 
       color: color ?? COLOR_CONST.shuttleGray,
       fontSize: fontSize ?? 16,
       fontStyle: fontStyle ?? FontStyle.normal,
@@ -33,8 +33,7 @@ class FONT_CONST {
     double? height,
     TextDecoration? textDecoration,
   }) {
-    return TextStyle(
-      // fontFamily: 'Nunito',
+    return GoogleFonts.inter(
       fontWeight: FontWeight.w600,
       color: color ?? COLOR_CONST.shuttleGray,
       fontSize: getProportionateScreenWidth(fontSize ?? 16),
@@ -55,8 +54,7 @@ class FONT_CONST {
     TextDecoration? textDecoration,
     FontWeight? fontWeight,
   }) {
-    return TextStyle(
-      // fontFamily: 'Nunito',
+    return GoogleFonts.inter(
       fontWeight: fontWeight ?? FontWeight.w700,
       color: color ?? COLOR_CONST.shuttleGray,
       fontSize: getProportionateScreenWidth(fontSize ?? 16),
@@ -77,8 +75,7 @@ class FONT_CONST {
     TextDecoration? textDecoration,
     FontWeight? fontWeight,
   }) {
-    return TextStyle(
-      // fontFamily: 'NunitoExtraBold',
+    return GoogleFonts.inter(
       fontWeight: fontWeight ?? FontWeight.w700,
       color: color ?? COLOR_CONST.shuttleGray,
       fontSize: getProportionateScreenWidth(fontSize ?? 16),

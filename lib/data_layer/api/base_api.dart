@@ -2,9 +2,13 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+import '../../common/app_config.dart';
+import '../../domain_layer/repository/dashboard_repository.dart';
 import 'api_url.dart';
 import 'dio_provider.dart';
 import 'error_from_server.dart';
+import 'package:cookie_jar/cookie_jar.dart';
 
 class APIDataStore {
   Dio dio = DioProvider.instance();
@@ -29,6 +33,7 @@ class APIDataStore {
       bodyRequest = formData;
     }
     try {
+
       Response? response;
       switch (apiURL.methods) {
         case HTTPRequestMethods.get:
@@ -65,67 +70,21 @@ class APIDataStore {
           break;
       }
 
-      if (response?.data['status'] == false) {
-        // await DioProvider.getCacheManager().deleteByPrimaryKeyAndSubKey(
-        //     customURL ?? apiURL.path,
-        //     requestMethod: 'GET');
-        // if (response?.data['message_code'] == 11 && tryAgain) {
-          
-        //   final authenRepository = AuthenRepository();
-        //   if (await authenRepository.refreshToken()) {
-        //     return await requestAPI(apiURL,
-        //         params: params,
-        //         body: body,
-        //         formData: formData,
-        //         tryAgain: false);
-        //   }
-        // }
-        print("Lỗi token ở đây !");
-        if(response?.data != null){
-          if(response!.data['error_code'].toString().contains("ERR_TOKEN_INVALID") ||
-            response.data['error_code'].toString().contains("ERR_TOKEN_NOT_FOUND")){
+      if(response?.data['err'] == -201){
+        final cookie  = response?.headers.map['set-cookie'];
+        final cookieStrings = cookie?.first.split(";");
 
-            print("Lỗi token - Thực hiện đăng xuất !!");
-            // if(AppConfig.instance.isFirstLogout == false){
-            //   AppConfig.instance.isFirstLogout = true;
-            //   FlutterNotificationCenter.post(
-            //     channel: NOTIFICATION_CENTER_CHANNEL.LOG_OUT.channel,
-            //   );
-            // }
-            
-          }else if(response.data['error_code'].toString().contains("ERR_TOKEN_EXPIRED")){
-            print("Lỗi token - Thực hiện reset token");
-            //  await DioProvider.getCacheManager().deleteByPrimaryKeyAndSubKey(
-            //       customURL ?? apiURL.path,
-            //       requestMethod: 'GET');
-              // if (tryAgain) {
-              //   final authenRepository = AuthenRepository();
-              //   if (await authenRepository.refreshToken()) {
-              //     return await requestAPI(apiURL,
-              //         params: params,
-              //         body: body,
-              //         formData: formData,
-              //         tryAgain: false);
-              //   }else{
-              //     AppConfig.instance.isFirstLogout = true;
-              //     FlutterNotificationCenter.post(
-              //       channel: NOTIFICATION_CENTER_CHANNEL.LOG_OUT.channel,
-              //     );
-              //   }
-              // }
-          }
-
-        }
-        
+        AppConfig.instance.Cookie = cookieStrings?.first;
+        print("cookieString ${cookieStrings?.first}");
+        print("ABCCC ${response?.data}");
         throw ErrorFromServer.fromJson(response?.data);
+      }else{
+        return response?.data;
       }
-      // return response?.data['data'];
-      return response?.data;
+      
     } on SocketException catch (_) {
       throw ErrorFromServer.noInternetConnection();
     } on DioError catch (e) {
-
-      // print("Lỗi !!!!!! ${e.response?.statusCode}");
       if (e.response != null &&
           e.response?.data != null &&
           e.response?.data?.toString().isNotEmpty != null) {

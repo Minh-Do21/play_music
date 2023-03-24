@@ -13,4 +13,5 @@ class AppConfig {
   Color primaryColor = COLOR_CONST.lochmara;
   String? XRapidAPIKey;
   String? XRapidAPIHost;
+  String? Cookie;
 }

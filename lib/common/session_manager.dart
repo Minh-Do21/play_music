@@ -1,12 +1,15 @@
 import 'dart:async' show Future;
 import 'dart:convert';
 
+import 'package:g_json/g_json.dart';
+import 'package:play_music/data_layer/model/info_song_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../data_layer/model/response_model/search_song_respone_model.dart';
 import 'app_config.dart';
 
 // - Key? for Shared Preferences
 class SessionManagerKey {
-  static const String USER_INFO = 'USER_INFO';
+  static const String LIST_SONG = 'LIST_SONG';
   static const String X_RAPID_API_KEY = 'X_RAPID_API_KEY';
   static const String X_RAPID_API_HOST = 'X_RAPID_API_HOST';
 }
@@ -16,24 +19,24 @@ class SessionManager {
 
   static final SessionManager share = SessionManager._privateConstructor();
 
-  // // Save User Info
-  // Future<bool> saveUserInfo({required UserInfoResponseModel userInfoResponseModel}) async {
-  //   final myPrefs = await SharedPreferences.getInstance();
-  //   final userEncode = jsonEncode(userInfoResponseModel);
-  //   return myPrefs.setString(
-  //     SessionManagerKey.USER_INFO,
-  //     userEncode,
-  //   );
-  // }
+  // Save User Info
+  Future<bool> saveListSong({required SearchSongResponeModel searchSongResponeModel}) async {
+    final myPrefs = await SharedPreferences.getInstance();
+    final userEncode = jsonEncode(searchSongResponeModel);
+    return myPrefs.setString(
+      SessionManagerKey.LIST_SONG,
+      userEncode,
+    );
+  }
 
-  // Future<UserInfoResponseModel?> getUserInfo() async {
-  //   final myPrefs = await SharedPreferences.getInstance();
-  //   final userString = myPrefs.getString(SessionManagerKey.USER_INFO);
-  //   if (userString != null) {
-  //     return UserInfoResponseModel.fromJson(JSON(jsonDecode(userString)));
-  //   }
-  //   return null;
-  // }
+  Future<SearchSongResponeModel?> getListSong() async {
+    final myPrefs = await SharedPreferences.getInstance();
+    final songsString = myPrefs.getString(SessionManagerKey.LIST_SONG);
+    if (songsString != null) {
+      return SearchSongResponeModel.fromJson(JSON(jsonDecode(songsString)));
+    }
+    return null;
+  }
 
   // Save XRapidAPIKey
   Future<bool> saveXRapidAPIKey({required String key}) async {
