@@ -24,4 +24,20 @@ class DashboardRepository {
       throw ErrorFromServer(message: e.message);
     }
   }
+
+  Future<SearchSongResponeModel> searchSongsAndSongTop(SearchSongParam searchSongParam) async {
+    try {
+
+      final response = await apiDataStore.requestAPI(
+        ApiURL.searchSong,
+        params: searchSongParam.toJson(),
+      );
+
+      return SearchSongResponeModel.fromJson(JSON(response['data']));
+      
+    } on DioError catch (e) {
+      print("AAAAAAAAAAAAAA ${e}");
+      throw ErrorFromServer(message: e.message);
+    }
+  }
 }

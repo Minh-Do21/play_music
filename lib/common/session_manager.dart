@@ -19,7 +19,7 @@ class SessionManager {
 
   static final SessionManager share = SessionManager._privateConstructor();
 
-  // Save User Info
+  // Save songs
   Future<bool> saveListSong({required SearchSongResponeModel searchSongResponeModel}) async {
     final myPrefs = await SharedPreferences.getInstance();
     final userEncode = jsonEncode(searchSongResponeModel);
@@ -36,6 +36,12 @@ class SessionManager {
       return SearchSongResponeModel.fromJson(JSON(jsonDecode(songsString)));
     }
     return null;
+  }
+
+  // remove songs
+  Future<bool> removeListSong() async {
+    final myPrefs = await SharedPreferences.getInstance();
+    return myPrefs.remove(SessionManagerKey.LIST_SONG);
   }
 
   // Save XRapidAPIKey

@@ -11,6 +11,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:play_music/screens/dashboard_screen/components/seek_bar.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import '../../data_layer/model/info_song_model.dart';
 import '../custom_widgets/barrel_custom_widgets.dart';
 import '../custom_widgets/image_video_custom.dart';
 import 'bloc/dashboard_bloc.dart';
@@ -68,6 +69,7 @@ class _DashboardScreenFormState extends State<_DashboardScreenForm>
 
   late AnimationController animationController;
   PanelController panelController = PanelController();
+  var playlist = ConcatenatingAudioSource(children: []);
 
   @override
   // ignore: avoid_void_async
@@ -113,7 +115,7 @@ class _DashboardScreenFormState extends State<_DashboardScreenForm>
       isInit = true;
 
       // Define the playlist
-      final playlist = ConcatenatingAudioSource(
+      playlist = ConcatenatingAudioSource(
         // Start loading next item just before reaching it
         useLazyPreparation: true,
         // Customise the shuffle algorithm
@@ -216,6 +218,28 @@ class _DashboardScreenFormState extends State<_DashboardScreenForm>
     }
   }
 
+  Future<void> updatePlayList(List<InfoSongModel> listSong)async{
+    BlocProvider.of<DashboardBloc>(context).add(GetListMusicEvent());
+
+    List<AudioSource> listAudio = [];
+    for(var data in listSong){
+      listAudio.add(
+        ClippingAudioSource(
+          child: AudioSource.file(data.pathFileLocal,),
+          tag: MediaItem(
+          id: data.encodeId,
+          title: data.title,
+          artist: data.artistsNames,
+          artUri: Uri.parse(
+            data.thumbnailM,)
+          )
+        )
+      );
+    }
+
+    playlist.insertAll(0, listAudio);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -266,6 +290,7 @@ class _DashboardScreenFormState extends State<_DashboardScreenForm>
               body: ListMyMusics(
                 panelController: panelController,
                 player: _player,
+                updatePlayList: updatePlayList,
               ));
         },
       ),

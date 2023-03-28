@@ -4,6 +4,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:play_music/data_layer/model/info_song_model.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../../../common/barrel_common.dart';
@@ -17,11 +18,13 @@ class ListMyMusics extends StatefulWidget {
   const ListMyMusics({
     required this.panelController,
     required this.player,
+    required this.updatePlayList,
     Key? key,
   }) : super(key: key);
 
   final PanelController panelController;
   final AudioPlayer player;
+  final Function(List<InfoSongModel>) updatePlayList;
 
   @override
   State<ListMyMusics> createState() => _ListMyMusicsState();
@@ -118,11 +121,15 @@ class _ListMyMusicsState extends State<ListMyMusics> {
                       actions: [
                         GestureDetector(
                           // ignore: unnecessary_lambdas
-                          onTap: () {
-                            Navigator.pushNamed(
+                          onTap: () async{
+                            final status = await Navigator.pushNamed(
                               context,
                               AppRouter.SEARCH_SONG_SCREEN,
                             );  
+
+                            if(status != null){
+                              widget.updatePlayList(status as List<InfoSongModel>);                         
+                            }
                           },
                           child: Padding(
                             padding: EdgeInsets.only(right: appDefaultPadding),

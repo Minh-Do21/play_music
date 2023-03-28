@@ -8,6 +8,7 @@ enum ICON_CONST {
   ic_profile,
   ic_profile_selected,
   ic_back,
+  ic_back_simple,
   ic_error,
   ic_success,
   ic_next,
@@ -17,6 +18,7 @@ enum ICON_CONST {
   ic_search,
   ic_down,
   ic_more,
+  ic_download,
 }
 
 // ignore: camel_case_extensions
@@ -41,6 +43,8 @@ extension ICON_CONST_VALUE on ICON_CONST {
         return 'assets/icons/ic_profile_selected.svg';
       case ICON_CONST.ic_back:
         return 'assets/icons/ic_back.svg';
+      case ICON_CONST.ic_back_simple:
+        return 'assets/icons/ic_back_simple.svg';
       case ICON_CONST.ic_error:
         return 'assets/icons/ic_error.svg';
       case ICON_CONST.ic_success:
@@ -59,6 +63,8 @@ extension ICON_CONST_VALUE on ICON_CONST {
         return 'assets/icons/ic_down.svg';
       case ICON_CONST.ic_more:
         return 'assets/icons/ic_more.svg';
+      case ICON_CONST.ic_download:
+        return 'assets/icons/ic_download.svg';
       default:
         return '';
     }
