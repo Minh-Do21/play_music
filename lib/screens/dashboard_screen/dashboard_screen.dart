@@ -1,19 +1,13 @@
 import 'dart:async';
-import 'dart:math';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:formz/formz.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
-import 'package:palette_generator/palette_generator.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:play_music/screens/dashboard_screen/components/seek_bar.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import '../../data_layer/model/info_song_model.dart';
 import '../custom_widgets/barrel_custom_widgets.dart';
-import '../custom_widgets/image_video_custom.dart';
 import 'bloc/dashboard_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../common/barrel_common.dart';
@@ -23,7 +17,6 @@ import 'components/control_music_bottom.dart';
 import 'components/list_my_musics.dart';
 import 'components/panel_control_music.dart';
 import 'components/position_data.dart';
-import 'components/seek_bar_only_show.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({Key? key}) : super(key: key);
@@ -59,14 +52,7 @@ class _DashboardScreenForm extends StatefulWidget {
 class _DashboardScreenFormState extends State<_DashboardScreenForm>
     with WidgetsBindingObserver, SingleTickerProviderStateMixin {
   final _player = AudioPlayer(); // Create a player
-  List<Color> colors = [
-    COLOR_CONST.black,
-    COLOR_CONST.black,
-    COLOR_CONST.black,
-  ];
-
   bool isInit = false;
-
   late AnimationController animationController;
   PanelController panelController = PanelController();
   var playlist = ConcatenatingAudioSource(children: []);
@@ -93,6 +79,7 @@ class _DashboardScreenFormState extends State<_DashboardScreenForm>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    print("ABCCBCBCCBCCB ${state}");
     if (state == AppLifecycleState.detached) {
       _player.stop();
       _player.dispose();
@@ -142,9 +129,6 @@ class _DashboardScreenFormState extends State<_DashboardScreenForm>
       _player.currentIndexStream.listen((event) async {
         if (event != null) {
           print("Indexxxxxxxxx ${event}");
-          final metadata =
-              state.listMusic[event].sequence.first.tag as MediaItem;
-          await getColorsImage(metadata.artUri.toString());
         }
       }, onError: (Object e, StackTrace stackTrace) {
         print('A stream error occurred: $e');
@@ -199,25 +183,6 @@ class _DashboardScreenFormState extends State<_DashboardScreenForm>
           (position, bufferedPosition, duration) => PositionData(
               position, bufferedPosition, duration ?? Duration.zero));
 
-  Future<PaletteGenerator> getImagePalette(ImageProvider imageProvider) async {
-    final PaletteGenerator paletteGenerator =
-        await PaletteGenerator.fromImageProvider(imageProvider);
-    return paletteGenerator;
-  }
-
-  Future<void> getColorsImage(String url) async {
-    final dataColors = await getImagePalette(NetworkImage(url));
-    colors.clear();
-    for (var data in dataColors.colors) {
-      if (colors.length == 6) break;
-      colors.add(data);
-    }
-
-    if (panelController.isPanelOpen) {
-      panelController.open();
-    }
-  }
-
   Future<void> updatePlayList(List<InfoSongModel> listSong)async{
     BlocProvider.of<DashboardBloc>(context).add(GetListMusicEvent());
 
@@ -227,11 +192,11 @@ class _DashboardScreenFormState extends State<_DashboardScreenForm>
         ClippingAudioSource(
           child: AudioSource.file(data.pathFileLocal,),
           tag: MediaItem(
-          id: data.encodeId,
-          title: data.title,
-          artist: data.artistsNames,
-          artUri: Uri.parse(
-            data.thumbnailM,)
+            id: data.encodeId,
+            title: data.title,
+            artist: data.artistsNames,
+            artUri: Uri.parse(data.thumbnailM,),
+            displayDescription: data.backgroundColor,
           )
         )
       );
@@ -283,8 +248,7 @@ class _DashboardScreenFormState extends State<_DashboardScreenForm>
                   animationController: animationController, 
                   positionDataStream: _positionDataStream, 
                   changeStatusMusic: changeStatusMusic, 
-                  nextMusic: nextMusic, pretMusic: pretMusic, 
-                  colors: colors
+                  nextMusic: nextMusic, pretMusic: pretMusic,
                 );
               },
               body: ListMyMusics(

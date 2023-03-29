@@ -2,8 +2,10 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
+import 'package:palette_generator/palette_generator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:play_music/data_layer/model/info_song_model.dart';
 import 'package:play_music/data_layer/model/response_model/search_song_respone_model.dart';
@@ -13,9 +15,11 @@ import '../../../common/session_manager.dart';
 import '../../../data_layer/api/error_from_server.dart';
 import 'package:formz/formz.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart';
 import 'dart:io' as io;
 
 import '../../../domain_layer/repository/dashboard_repository.dart';
+import '../../../utils/app_const/color_const.dart';
 part 'dashboard_event.dart';
 part 'dashboard_state.dart';
 
@@ -59,7 +63,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     final listSong = await SessionManager.share.getListSong();
     print("AAAAAAAAAAAAAAAAAAAAA: ${listSong?.songs}");
 
-    if(fileList.isEmpty || listSong == null){
+    if((fileList.isEmpty || listSong == null) && (fileList.length != listSong?.songs.length)){
 
       List<InfoSongModel> listSongSearch = [];
       List<InfoSongModel> listSong = [];
@@ -103,13 +107,71 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
           if(file != null){
             var newSong = data;
             newSong.pathFileLocal = file.path;
+            List<String> colors = await getImagePalette(NetworkImage(data.thumbnailM));
+            newSong.backgroundColor = colors.join(",");
+            print("MÀUUUUUU: ${newSong.backgroundColor}");
             listSong.insert(0, newSong);
           }  
         }
 
         SessionManager.share.saveListSong(searchSongResponeModel: SearchSongResponeModel(songs: listSong));
         for(var data in listSong){
-          print("ABBCCCC: ${data.alias}");
+
+          final file = File(data.pathFileLocal);
+
+          print("Path FILEEEEE: ${file.path} - ${file.existsSync()}");
+
+          listAudio.add(
+            ClippingAudioSource(
+              child: AudioSource.file(data.pathFileLocal,),
+              tag: MediaItem(
+                id: data.encodeId,
+                title: data.title,
+                artist: data.artistsNames,
+                artUri: Uri.parse(data.thumbnailM,),
+                displayDescription: data.backgroundColor,
+              ),
+              
+            )
+          );
+        }
+
+      } on ErrorFromServer catch (e) {
+        print("Lỗi ${e.errorCode} - ${AppConfig.instance.Cookie}");
+      }
+      
+    }else{
+
+      if(Platform.isIOS){
+
+        
+        for(var data in listSong!.songs){
+        
+          File file = fileList.firstWhere((item) {
+            File file = File(item.path);
+            String fileName = file.path.split(Platform.pathSeparator).last;
+            print("FILE NAME: ${fileName}");
+            return fileName == "${data.alias}.mp3" ? true : false;
+          });
+
+          print("Path FILEEEEE: ${file.path} ${file.existsSync()}");
+          listAudio.add(
+            ClippingAudioSource(
+              child: AudioSource.file(file.path,),
+              tag: MediaItem(
+                id: data.encodeId,
+                title: data.title,
+                artist: data.artistsNames,
+                artUri: Uri.parse(data.thumbnailM,),
+                displayDescription: data.backgroundColor,
+              ),
+            )
+          );
+        }
+      }else{
+        for(var data in listSong!.songs){
+          final file = File(data.pathFileLocal);
+          print("Path FILEEEEE: ${file.path} ${file.existsSync()}");
           listAudio.add(
             ClippingAudioSource(
               child: AudioSource.file(data.pathFileLocal,),
@@ -123,26 +185,6 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
             )
           );
         }
-
-      } on ErrorFromServer catch (e) {
-        print("Lỗi ${e.errorCode} - ${AppConfig.instance.Cookie}");
-      }
-      
-    }else{
-      for(var data in listSong.songs){
-        print("ABBCCCC: ${data.alias}");
-        listAudio.add(
-          ClippingAudioSource(
-            child: AudioSource.file(data.pathFileLocal,),
-            tag: MediaItem(
-            id: data.encodeId,
-            title: data.title,
-            artist: data.artistsNames,
-            artUri: Uri.parse(
-              data.thumbnailM,)
-            )
-          )
-        );
       }
     }
 
@@ -194,7 +236,8 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
         await Directory(myImagePath).create();
 
         File file = File('$myImagePath/$filename');
-        await file.writeAsBytes(bytes);
+        file.createSync();
+        file.writeAsBytesSync(bytes);
         print('downloaded file path = ${file.path}');
         return file;
       }catch(error){
@@ -204,5 +247,29 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     }else{
       return null;
     }
+  }
+
+  Future<List<String>> getImagePalette(ImageProvider imageProvider) async {
+
+    List<String> colorsString = [
+      COLOR_CONST.black.value.toString(),
+      COLOR_CONST.black.value.toString(),
+      COLOR_CONST.black.value.toString(),
+    ];
+
+    try{
+      colorsString.clear();
+      final PaletteGenerator paletteGenerator =
+        await PaletteGenerator.fromImageProvider(imageProvider);
+
+      for (var data in paletteGenerator.colors) {
+        if (colorsString.length == 6) break;
+        colorsString.add(data.value.toString());
+      }
+    }catch(_){
+
+    }
+
+    return colorsString;
   }
 }

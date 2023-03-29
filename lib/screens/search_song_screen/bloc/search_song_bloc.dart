@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:formz/formz.dart';
+import 'package:palette_generator/palette_generator.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../common/session_manager.dart';
@@ -13,6 +15,8 @@ import '../../../data_layer/model/response_model/search_song_respone_model.dart'
 import '../../../data_layer/request_params/search_song_param.dart';
 import '../../../domain_layer/repository/dashboard_repository.dart';
 import 'package:path_provider/path_provider.dart';
+
+import '../../../utils/barrel_utils.dart';
 
 part 'search_song_event.dart';
 part 'search_song_state.dart';
@@ -51,7 +55,7 @@ class SearchSongBloc extends Bloc<SearchSongEvent, SearchSongState> {
 
         final response = await dashboardRepository.searchSongsAndSongTop(searchSongParam);
 
-        InfoSongModel? songTop = InfoSongModel(encodeId: "", title: "", alias: "", artistsNames: "", thumbnailM: "", pathFileLocal: "", objectType: "", streamingStatus: 0);
+        InfoSongModel? songTop = InfoSongModel(encodeId: "", title: "", alias: "", artistsNames: "", thumbnailM: "", pathFileLocal: "", objectType: "", streamingStatus: 0, backgroundColor: "");
         if(response.songTop!.objectType.contains("song") && response.songTop!.streamingStatus == 1){
           songTop = response.songTop;
         }
@@ -105,6 +109,8 @@ class SearchSongBloc extends Bloc<SearchSongEvent, SearchSongState> {
 
       if(file != null){
         var songDownLoad = event.infoSong;
+        List<String> colors = await getImagePalette(NetworkImage(event.infoSong.thumbnailM));
+        songDownLoad.backgroundColor = colors.join(",");
         songDownLoad.pathFileLocal = file.path;
         listSongLocal.songs.insert(0, songDownLoad);
         await SessionManager.share.removeListSong();
@@ -162,5 +168,29 @@ class SearchSongBloc extends Bloc<SearchSongEvent, SearchSongState> {
     }else{
       return null;
     }
+  }
+
+  Future<List<String>> getImagePalette(ImageProvider imageProvider) async {
+
+    List<String> colorsString = [
+      COLOR_CONST.black.value.toString(),
+      COLOR_CONST.black.value.toString(),
+      COLOR_CONST.black.value.toString(),
+    ];
+
+    try{
+      colorsString.clear();
+      final PaletteGenerator paletteGenerator =
+        await PaletteGenerator.fromImageProvider(imageProvider);
+
+      for (var data in paletteGenerator.colors) {
+        if (colorsString.length == 6) break;
+        colorsString.add(data.value.toString());
+      }
+    }catch(_){
+
+    }
+
+    return colorsString;
   }
 }

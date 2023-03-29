@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:g_json/g_json.dart';
 
 class InfoSongModel extends Equatable{
@@ -10,6 +11,7 @@ class InfoSongModel extends Equatable{
   String pathFileLocal;
   String objectType;
   int streamingStatus;
+  String backgroundColor;
 
   InfoSongModel({
     required this.encodeId,
@@ -20,6 +22,7 @@ class InfoSongModel extends Equatable{
     required this.pathFileLocal,
     required this.objectType,
     required this.streamingStatus,
+    required this.backgroundColor,
   });
 
   factory InfoSongModel.fromJson(JSON json) {
@@ -33,6 +36,7 @@ class InfoSongModel extends Equatable{
         pathFileLocal: "",
         objectType: "",
         streamingStatus: 0,
+        backgroundColor: "",
       );
     }
     return InfoSongModel(
@@ -44,6 +48,7 @@ class InfoSongModel extends Equatable{
       pathFileLocal: json['pathFileLocal'].stringValue,
       objectType: json['objectType'].stringValue,
       streamingStatus: json['streamingStatus'].integerValue,
+      backgroundColor: json['backgroundColor'].stringValue,
     );
   }
 
@@ -57,6 +62,7 @@ class InfoSongModel extends Equatable{
     data['pathFileLocal'] = pathFileLocal;
     data['objectType'] = objectType;
     data['streamingStatus'] = streamingStatus;
+    data['backgroundColor'] = backgroundColor;
     return data;
   }
 
@@ -71,5 +77,6 @@ class InfoSongModel extends Equatable{
     pathFileLocal,
     objectType,
     streamingStatus,
+    backgroundColor,
   ];
 }

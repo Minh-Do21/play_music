@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +24,6 @@ class PanelControlMusic extends StatelessWidget {
     required this.changeStatusMusic,
     required this.nextMusic,
     required this.pretMusic,
-    required this.colors,
     Key? key,
   }) : super(key: key);
 
@@ -33,7 +34,6 @@ class PanelControlMusic extends StatelessWidget {
   final Function() changeStatusMusic;
   final Function() nextMusic;
   final Function() pretMusic;
-  final List<Color> colors;
 
   @override
   Widget build(BuildContext context) {
@@ -47,14 +47,26 @@ class PanelControlMusic extends StatelessWidget {
                 return const SizedBox();
               }
               final metadata = statePlayer?.currentSource!.tag as MediaItem;
-              return Container(
-                padding: EdgeInsets.only(top: 20),
+
+              print("VẼ LẠIIIIIIIIIII ABC");
+              List<Color> colors = [];
+
+              metadata.displayDescription!.split(",").forEach((item) {
+                Color newColor = Color(int.parse(item));
+                colors.add(newColor);
+              });
+              return AnimatedContainer(
+                duration: const Duration(milliseconds: 600),
+                curve: Curves.easeInOut,
+                padding: const EdgeInsets.only(top: 20),
                 height: SizeConfig.screenHeight,
                 decoration: BoxDecoration(
                     gradient: LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
-                        colors: colors)),
+                        colors: colors
+                        )
+                      ),
                 child: Scaffold(
                   backgroundColor: Colors.transparent,
                   appBar: AppBarDefaultBack(
